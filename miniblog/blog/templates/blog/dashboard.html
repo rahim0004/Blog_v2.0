@@ -1,0 +1,78 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock title %}
+
+
+
+{% block side %}
+<div class="col-sm-4">
+    <div class='ms-3 mt-2'>
+        <h1 class='text-center bb' style='display:inline;'>Dashboard</h1>
+    </div>
+    <div class="container mt-3 bbr">
+        <h3 class='text-center mb-3 pt-4 text-warning'>Profile</h3>
+        <div class='text-center'>
+            <img src="{% static 'blog/images/no_profile.png' %}" alt="" class='rounded-circle w-25 text-center'>
+        </div>
+        <h4 class='text-center'>
+            {{request.user.first_name}} {{request.user.last_name}}
+        </h4>
+        {% if request.user.is_superuser %}
+        <p class='text-center text-danger'>Admin</p>
+        {% elif not perms.blog.add_post%}
+        <p class='text-center text-danger'>Memeber</p>
+        {% else %}
+        <p class='text-center text-danger'>Author</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock side %}
+
+
+{% block content %}
+<div class="col-sm-8">
+    <div class="container">
+        {% block msg %}
+        {% endblock msg %}
+        <div>
+            <h1 class='bbt mt-4'>Show Post Information</h1>
+            <div>
+                {% if perms.blog.add_post %}
+                <a href="{% url 'blog:add_post' %}" class='btn btn-success my-1'>Add Post</a>
+                {% endif %}
+            </div>
+            <table class="table table-dark table-striped table-hover">
+                <thead class='bb'>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Description</th>
+                        <th scope="col" class='text-center'>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pt in post %}
+                    
+                    <tr>
+                        <th scope="row">{{pt.id}}</th>
+                        <td>{{pt.title|truncatechars:17}}</td>
+                        <td>{{pt.desc|truncatechars:20}}</td>
+                        <td class='text-center'>
+                            <a href="{% url 'blog:update' pt.id %}" class='btn btn-warning  btn-sm my-2'>Edit</a>
+                            <a href="{% url 'blog:detail' pt.id %}" class='btn btn-success btn-sm my-2 mx-2'>View Post</a>
+                            {% if request.user.is_superuser %}
+                            <a href="{% url 'blog:delete' pt.id %}" class='btn btn-danger btn-sm my-2 '>Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
+

@@ -1,0 +1,33 @@
+body{
+    color:antiquewhite;
+    background-color: #212529;
+}
+.form-control{
+    background-color: rgb(87, 86, 85);
+color:white;
+border-bottom: 2px solid yellow;
+}
+.form-control:focus{
+    background-color: rgb(87, 86, 85);
+    color: white;
+
+}
+
+
+.bb{
+    border-bottom: 2px solid rgb(255, 166, 1);
+    background-image: linear-gradient(to bottom, rgb(27, 27, 26) , rgb(219, 179, 106));
+
+}
+.bbr{
+    border-right: 8px solid rgb(255, 166, 1);
+    /* background-color: rgb(41, 39, 38); */
+    background-color: rgb(34 40 46);
+}
+.bbt{
+    border-bottom: 6px solid rgb(255, 166, 1);
+}
+
+.tc{
+    color: rgb(184, 219, 26);
+}

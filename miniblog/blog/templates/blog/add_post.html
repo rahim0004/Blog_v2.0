@@ -1,0 +1,19 @@
+{% extends 'blog/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{{ttl}}{% endblock title %}
+{% block content %}
+
+<div class="container w-75 mt-4">
+    <div class='mb-5'>
+        <h1 class='bb' style='display:inline'>{{heading}}</h1>
+    </div>
+    <form action="{% url 'blog:add_post' %}" method="post">
+        {% csrf_token %}
+        {{form|crispy}}
+        <input type="submit" value="{{bn}}" class='btn btn-outline-warning mt-3'>
+        <a href="{% url 'blog:dashboard' %}" class='btn btn-outline-success mt-3 ms-2'>Go back</a>
+    </form>
+</div>
+
+
+{% endblock content %}

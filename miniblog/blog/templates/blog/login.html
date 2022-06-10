@@ -1,0 +1,15 @@
+{% extends 'blog/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Login{% endblock title %}
+
+{% block content %}
+<div class="container w-50 mt-5">
+    <h1 class='mt-5'>Login</h1>
+    <form action="{% url 'blog:login' %}" method="post" class='mt-5' novalidate>
+        {% csrf_token %}
+        {{form|crispy}}
+        <input type="submit" value="Login" class='btn btn-outline-warning mt-3'>
+    </form>
+</div>
+
+{% endblock content %}
