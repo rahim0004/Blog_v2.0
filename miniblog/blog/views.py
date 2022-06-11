@@ -140,22 +140,6 @@ def post_edit(request,pk):
     else:
         return HttpResponseRedirect('/')
 
-# @login_required
-# def post_edit(request,pk):
-#     if request.user == post.author:
-#         if request.method == 'POST':
-#             post = get_object_or_404(Post, id=pk)
-#             form = PostForm(request.POST or None, instance=post)
-#             form.save()
-#             return HttpResponseRedirect('/')
-#         else:
-#             return render(request,'blog/add_post.html',{'form':form,'heading':'Edit Post','bn':'Save','ttl':'Edit'})
-#     else:
-#         return HttpResponseRedirect('/')
-
-
-
-
 
 @login_required
 def post_delete(request,pk):
