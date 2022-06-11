@@ -1,17 +1,18 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from .models import Post
-from .forms import UserForm,ContactForm,AdminProfileForm,UserProfileForm,PostForm
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Post,Comment
+from .forms import UserForm,ContactForm,AdminProfileForm,UserProfileForm,PostForm,CommentForm
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User,Group
 from django.contrib.auth.decorators import login_required 
+
 # Create your views here.
 def home(request):
     post = Post.objects.all()
-    return render(request,'blog/home.html',{'posts':post,'home':'active bb','hsr':'Recent Posts'})
-
+    comment = Comment.objects.all()
+    return render(request,'blog/home.html',{'posts':post,'home':'active bb','hsr':'Recent Posts','comments':comment})
 
 def contact(request):
     if request.method == 'POST':
@@ -62,7 +63,7 @@ def user_login(request):
 def user_dashboard(request):
     if request.user.is_authenticated:
         if request.user.has_perm('blog.add_post'):
-            posts = Post.objects.all()
+            posts = Post.objects.filter(author=request.user)
             if request.method == 'POST':
                 if request.user.is_superuser:
                     form = AdminProfileForm(request.POST, instance=request.user)
@@ -97,30 +98,49 @@ def user_logout(request):
 @login_required
 def add_post(request):
     if request.user.is_authenticated:
-        if request.method == 'POST':
-            form = PostForm(request.POST or None)
-            if form.is_valid():
-                form.save()
-                return HttpResponseRedirect('/dashboard/')
-        else:
-            form = PostForm()
-        return render(request,'blog/add_post.html',{'form':form,'heading':'New Post','bn':'Post','ttl':'Add'})
+        if request.user.has_perm('blog.add_post'):
+            if request.method == 'POST':
+                form = PostForm(request.POST or None)
+                if form.is_valid():
+                    form.instance.author = request.user
+                    form.save()
+                    return HttpResponseRedirect('/dashboard/')
+            else:
+                form = PostForm()
+            return render(request,'blog/add_post.html',{'form':form,'heading':'New Post','bn':'Post','ttl':'Add'})
 
 
 def post_detail(request, pk):
+    # cmt = Comment.objects.filter(post=pk)
     posts = Post.objects.get(id=pk)
-    return render(request,'blog/detail.html',{'posts':posts})
+    cmt = posts.comments.all()
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = CommentForm(request.POST or None)
+            if form.is_valid():
+                comment= form.save(commit=False)
+                comment.post = posts
+                comment.author = request.user
+                comment.save() 
+                return redirect(to='blog:detail', pk=pk)
+        else:
+            form = CommentForm()
+    else:
+        form = {}
+    return render(request,'blog/detail.html',{'posts':posts,'form':form,'cmt':cmt})
 
 @login_required
 def post_edit(request,pk):
     post = Post.objects.get(id=pk)
     form = PostForm(request.POST or None, instance=post)
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
+    if request.user == post.author:
+        if request.method == 'POST':
+                form.save()
+                return HttpResponseRedirect('/')
+        else:
+            return render(request,'blog/add_post.html',{'form':form,'heading':'Edit Post','bn':'Save','ttl':'Edit'})
     else:
-        return render(request,'blog/add_post.html',{'form':form,'heading':'Edit Post','bn':'Save','ttl':'Edit'})
+        return HttpResponseRedirect('/')
 
 @login_required
 def post_delete(request,pk):
@@ -133,6 +153,9 @@ def post_delete(request,pk):
 def search(request):
     if request.method == 'GET':
         data = request.GET.get('name')
-        posts = Post.objects.filter(desc__contains=data).all()
-        count = posts.count()
-        return render(request,'blog/home.html',{'posts':posts,'home':'active bb','hsr':'Searched Results','count':count})
+        if len(data) != 0:
+            posts = Post.objects.filter(desc__contains=data).all()
+            count = posts.count()
+            return render(request,'blog/home.html',{'posts':posts,'home':'active bb','hsr':'Searched Results','count':count})
+        else:
+            return HttpResponseRedirect('/')

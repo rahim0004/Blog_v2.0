@@ -6,7 +6,7 @@
 <span {% if message.tags %} class='text-{{message.tags}} ms-3'{% endif %}>{{message}}</span>
 {% endfor %}
 {% endif %}{% endblock msg %}
-{% block content %}
+{% block body %}
 <div class="container mt-4 w-50">
     <div class='my-2 mb-3'>
         <h1 class='bb' style='display:inline'>Register</h1>
@@ -17,4 +17,4 @@
         <input type="submit" value="Register" class='btn btn-outline-warning mt-3'>
     </form>
 </div>
-{% endblock content %}
+{% endblock body %}

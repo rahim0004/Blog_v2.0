@@ -17,7 +17,7 @@ border-bottom: 2px solid yellow;
 .bb{
     border-bottom: 2px solid rgb(255, 166, 1);
     background-image: linear-gradient(to bottom, rgb(27, 27, 26) , rgb(219, 179, 106));
-
+    
 }
 .bbr{
     border-right: 8px solid rgb(255, 166, 1);
@@ -30,4 +30,13 @@ border-bottom: 2px solid yellow;
 
 .tc{
     color: rgb(184, 219, 26);
+}
+
+.cmb{
+    
+    background-image: linear-gradient(to right, #212329, rgb(39, 33, 21));
+}
+
+h2{
+    font-family: 'Charis SIL', serif;
 }

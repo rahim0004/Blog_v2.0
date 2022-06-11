@@ -35,12 +35,13 @@
         {% block msg %}
         {% endblock msg %}
         <div>
-            <h1 class='bbt mt-4'>Show Post Information</h1>
+            <h1 class='bbt mt-4'>Your Posts</h1>
             <div>
                 {% if perms.blog.add_post %}
                 <a href="{% url 'blog:add_post' %}" class='btn btn-success my-1'>Add Post</a>
                 {% endif %}
             </div>
+            {% if post %}
             <table class="table table-dark table-striped table-hover">
                 <thead class='bb'>
                     <tr>
@@ -66,11 +67,13 @@
                         </td>
                     </tr>
                     {% endfor %}
-                    
+                    {% else %}
+                    <h2 class='mt-5 ms-5 pt-5 ps-5'>You haven't posted anyting.</h2>
+                    {% endif %}
                 </tbody>
             </table>
-
-
+            
+            
         </div>
     </div>
 </div>

@@ -1,13 +1,13 @@
 {% extends 'blog/base.html' %}
 {% block title %}Home{% endblock title %}
-{% block content %}
+{% block body %}
 <div class="col-sm-10">
     <div class="">
         <h3 class='ms-5 mt-4 bbt mb-4 w-25 '>{{hsr}} {{count}}</h3>
     </div>
     {% for post in posts %}
     <div class="container ms-5 py-5 px-5 w-100 bbr mb-3">
-        <h2 class='font-weight-bold'>
+        <h2 class=''>
             <a href="{% url 'blog:detail' post.id %}" class='text-decoration-none tc'>
                 {{post.title}}
             </a>
@@ -15,7 +15,8 @@
         <p class='w-50'>
             {{post.desc|truncatewords:20}}
         </p>
+        <small class='text-warning'>Comments : <spanc class='text-info'>{{post.comments.count}}</span></small>
     </div>
     {% endfor %}
 </div>
-{% endblock content %}
+{% endblock body %}

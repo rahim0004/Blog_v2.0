@@ -1,6 +1,7 @@
 {% extends 'blog/base.html' %}
+{% load crispy_forms_tags %}
 {% block title %}{% if posts %}{{posts.title}}{% endif %}{% endblock title %}
-{% block content %}
+{% block body %}
 
 <div class="container mx-5 px-5 mt-5">
     <h3>{{posts.title}}</h3>
@@ -8,6 +9,31 @@
 
 </div>
 
+<hr class='container mt-5'>
+{% if request.user.is_authenticated %}
+<div class='ms-5 w-25'>
+    <h3> Comment:</h3>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form|crispy}}
+        <input type="submit" value="Comment" class='btn btn-sm btn-warning mt-2'>
+    </form>
+</div>
+{% else %}
+<h3 class='ms-5'>Please login to comment <small><a href="{% url 'blog:login' %}" class='text-decoration-none h5'>Login >></a></small></h3>
+{% endif %}
 
-
-{% endblock content %}
+<div class=" ms-5 my-2">
+    <h4 class='border-bottom w-50 text-warning'>Comments</h4>
+    {% if cmt %}
+    {% for comment in cmt %}
+    <div class='cmb'>
+        <h3><i class="fa-solid fa-user fa-xs"></i> {{comment.author}}</h3>
+        <p>{{comment.text}}</p>
+        {% endfor %}
+    </div>
+        {% else %}
+        <h4>No Comments Yet</h4>
+        {% endif %}
+</div>
+{% endblock body %}
