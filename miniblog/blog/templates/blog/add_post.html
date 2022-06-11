@@ -7,9 +7,13 @@
     <div class='mb-5'>
         <h1 class='bb' style='display:inline'>{{heading}}</h1>
     </div>
-    <form action="{% url 'blog:add_post' %}" method="post">
+    <form action="{% if forms %}{% url 'blog:update' post.id %}{% else %} {% url 'blog:add_post' %} {% endif %}" method="post">
         {% csrf_token %}
+        {% if forms %}
+        {{forms|crispy}}
+        {% else %}
         {{form|crispy}}
+        {% endif %}
         <input type="submit" value="{{bn}}" class='btn btn-outline-warning mt-3'>
         <a href="{% url 'blog:dashboard' %}" class='btn btn-outline-success mt-3 ms-2'>Go back</a>
     </form>

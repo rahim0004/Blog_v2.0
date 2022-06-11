@@ -64,12 +64,12 @@ def user_dashboard(request):
     if request.user.is_authenticated:
         if request.user.has_perm('blog.add_post'):
             posts = Post.objects.filter(author=request.user)
+            gps = request.user.groups.all()
             if request.method == 'POST':
                 if request.user.is_superuser:
                     form = AdminProfileForm(request.POST, instance=request.user)
-                    users = User.objects.all()
                 else:
-                    users = None
+                    
                     form = UserProfileForm(request.POST, instance=request.user)
                 if form.is_valid():
                     form.save()
@@ -77,11 +77,9 @@ def user_dashboard(request):
             else:
                 if request.user.is_superuser:
                     form = AdminProfileForm(instance=request.user)
-                    users = User.objects.all()
                 else:
-                    users = None
                     form = UserProfileForm(instance=request.user)
-            return render(request,'blog/dashboard.html',{'form':form,'users':users,'dashboard':'active bb','post':posts})
+            return render(request,'blog/dashboard.html',{'form':form,'dashboard':'active bb','post':posts,'gps':gps})
         else:
             return render(request,'blog/dashboard.html') 
     else:
@@ -138,9 +136,26 @@ def post_edit(request,pk):
                 form.save()
                 return HttpResponseRedirect('/')
         else:
-            return render(request,'blog/add_post.html',{'form':form,'heading':'Edit Post','bn':'Save','ttl':'Edit'})
+            return render(request,'blog/add_post.html',{'forms':form,'heading':'Edit Post','bn':'Save','ttl':'Edit','post':post})
     else:
         return HttpResponseRedirect('/')
+
+# @login_required
+# def post_edit(request,pk):
+#     if request.user == post.author:
+#         if request.method == 'POST':
+#             post = get_object_or_404(Post, id=pk)
+#             form = PostForm(request.POST or None, instance=post)
+#             form.save()
+#             return HttpResponseRedirect('/')
+#         else:
+#             return render(request,'blog/add_post.html',{'form':form,'heading':'Edit Post','bn':'Save','ttl':'Edit'})
+#     else:
+#         return HttpResponseRedirect('/')
+
+
+
+
 
 @login_required
 def post_delete(request,pk):
